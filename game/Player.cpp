@@ -8567,6 +8567,29 @@ void idPlayer::PerformImpulse( int impulse ) {
 			idFuncRadioChatter::RepeatLast();
 			break;
 		}
+		case IMPULSE_26: {
+			const char* key, * value;
+			int			i;
+			float		yaw;
+			idVec3		org;
+			idPlayer* player;
+			idDict		dict;
+
+			player = gameLocal.GetLocalPlayer();
+			yaw = player->viewAngles.yaw;
+
+			dict.Set("classname", "monster_strogg_marine");
+			dict.Set("angle", va("%f", yaw + 180));
+
+			org = player->GetPhysics()->GetOrigin() + idAngles(0, yaw, 0).ToForward() * 80 + idVec3(0, 0, 1);
+			dict.Set("origin", org.ToString());
+			idEntity* newEnt = NULL;
+			gameLocal.SpawnEntityDef(dict, &newEnt);
+
+			if (newEnt) {
+				gameLocal.Printf("spawned entity '%s'\n", newEnt->name.c_str());
+			}
+		}
 
 // RITUAL BEGIN
 // squirrel: Mode-agnostic buymenus
