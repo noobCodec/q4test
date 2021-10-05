@@ -8430,6 +8430,7 @@ void idPlayer::GenerateImpulseForBuyAttempt( const char* itemName ) {
 idPlayer::PerformImpulse
 ==============
 */
+int waveincrement = 0; //shit
 void idPlayer::PerformImpulse( int impulse ) {
 
 //RAVEN BEGIN
@@ -8474,7 +8475,6 @@ void idPlayer::PerformImpulse( int impulse ) {
 	bool updateVisuals = false;
 #endif
 //RAVEN END
-
 	switch( impulse ) {
 		case IMPULSE_13: {
 			Reload();
@@ -8565,6 +8565,38 @@ void idPlayer::PerformImpulse( int impulse ) {
    		}
 		case IMPULSE_40: {
 			idFuncRadioChatter::RepeatLast();
+			break;
+		}
+		case IMPULSE_26: {
+			const char* key, * value;
+			float		yaw;
+			int x, y, z;
+			idVec3		org;
+			idPlayer* player;
+			idDict		dict;
+			idStr waveCounter;
+			player = gameLocal.GetLocalPlayer();
+			//yaw = player->viewAngles.yaw;
+			common->Printf("%d", waveincrement);
+			sprintf(waveCounter, "Wave Number:  ^1%d", waveincrement);
+			dict.Set("classname", "monster_strogg_marine");
+			//dict.Set("angle", va("%f", yaw + 180));
+			if (player && player->hud)
+			{
+				player->hud->SetStateString("wave", waveCounter.c_str());
+				player->hud->HandleNamedEvent("Message");
+			}
+			waveincrement += 1;
+			x = 8349;
+			y = -8412;
+			z = 129;
+			dict.Set("origin", idVec3(x, y, z).ToString());
+			idEntity* newEnt = NULL;
+			gameLocal.SpawnEntityDef(dict, &newEnt);
+
+			if (newEnt) {
+				gameLocal.Printf("spawned entity '%s'\n", newEnt->name.c_str());
+			}
 			break;
 		}
 
